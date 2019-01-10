@@ -9,6 +9,7 @@ better gui
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anywhere's Fine</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
   </head>
   <body>
     <!--container for map-->
@@ -17,11 +18,10 @@ better gui
       <div id="output">
         <h1>Finding restaurants in your area...</h1>
       </div>
-      <br><br><br><br><br><br><br><br>
-      <div id="button">
-        <button onclick="newPlace()">Find another restaurant</button>
+        <button class="button" onclick="newPlace()">FIND ANOTHER RESTAURANT</button>
       </div>
     </div>
+
     <script>
       var map, infoWindow, marker, service, pos, request, searchResults, marker;
       var randomIndex = 1;
