@@ -1,0 +1,146 @@
+<!--
+TODO: 
+better gui
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Restaurant Picker</title>
+    <style>
+      #map {
+        height: 350px;
+        width: 100%;
+      }
+      #output {
+        height: 100px;
+        width: 100%;
+        padding-bottom: 50px;
+        text-align: center;
+      }
+      #button {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!--container for map-->
+    <div id="map"></div>
+
+    <!--container for output-->
+    <div id="output">
+      <h3>Why don't you go to...</h3>
+    </div>
+
+    <div id="button">
+      <button onclick="newPlace()">Find another restaurant</button>
+    </div>
+    <script>
+      var map, infoWindow, marker, service, pos, request, searchResults, marker;
+      var randomIndex = 1;
+      var randomNums = [];
+      var op = document.getElementById('output');
+
+      function createMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 0, lng: 0},
+          zoom: 10
+        });
+        
+        infowindow = new google.maps.InfoWindow();
+
+        //HTML5 geolocation
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+        map.setCenter(pos);
+          });
+        }
+
+        waitForLoc();
+      }
+
+      //wait for the location of the user to be defined before continuing
+      function waitForLoc() {
+        if (typeof pos !== "undefined") {
+          request = {
+            location: pos,
+            radius: 16093,//10 miles in meters
+            type: ['restaurant']
+          };
+          service = new google.maps.places.PlacesService(map);
+          service.nearbySearch(request, output);
+        }
+        else {
+          setTimeout(waitForLoc, 1000);
+        }
+      }
+
+      function output(results, status, pagination) {
+        pagination.nextPage();
+        //allow results array to be accessed outside of this function
+        if (typeof searchResults === "undefined") {
+          searchResults = results;
+        }
+        else {
+          searchResults = searchResults.concat(results);
+        }
+        console.log(searchResults);
+        if (!pagination.hasNextPage) {
+          //create array of random numbers to be used to cycle through restaurants
+          while (randomNums.length < searchResults.length) {
+            var n = Math.floor(Math.random() * searchResults.length);
+            if (randomNums.indexOf(n) === -1) {
+              randomNums.push(n);
+            }
+          }
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            createMarker(searchResults[randomNums[0]]);
+          }
+          op.innerHTML = "<h3>Why don't you go to...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].vicinity + "</h3>";
+        }
+      }
+
+      function createMarker(place) {
+        marker = new google.maps.Marker({
+            map: map,
+            position: place.geometry.location,
+            animation: google.maps.Animation.DROP
+        });
+        
+        marker.addListener('click', function() {
+          infowindow.setOptions({
+            content: ("<p>" + place.name + "</p><p>" + place.vicinity + "</p>"),
+            position: place.geometry.location
+          });
+          infowindow.open(map);
+        })
+        
+      }
+
+      function newPlace() {
+        marker.setMap(null);
+        infowindow.close(map);
+        var place = searchResults[randomNums[randomIndex]];
+        //loop through array of restaurants
+        op.innerHTML = "<h3>Why don't you go to...<h3><h1>" + place.name + "</h1><h3>" + place.vicinity + "<h3>";
+        createMarker(place);
+        if (randomIndex < searchResults.length-1) {
+          randomIndex += 1;
+        }
+        else {
+          randomIndex = 0;
+        }
+      }
+    </script>
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYt9VVQ99uazPcofKhJrS4AIGCa9AC6hQ&libraries=places&callback=createMap">
+    </script>
+  </body>
+  
+</script>
+</html>
