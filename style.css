@@ -1,6 +1,11 @@
+/*
+TODO:
+make output appear in modal box
+*/
 #map {
-  height: 350px;
+  height: 500px;
   width: 100%;
+  position: relative;
 }
 #output {
   height: 100px;
