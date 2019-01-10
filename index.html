@@ -12,18 +12,14 @@ better gui
   <body>
     <!--container for map-->
     <div id="map"></div>
-
-    <!--container for output-->
-    <div id="output">
-      <h3>Why don't you go to...</h3>
-    </div>
-
-    <div id="button">
-      <button onclick="newPlace()">Find another restaurant</button>
-    </div>
-
     <div id="modal">
-      <p></p>
+      <div id="output">
+        <h1>Picking a random restaurant...</h1>
+      </div>
+      <br><br><br><br><br><br><br><br>
+      <div id="button">
+        <button onclick="newPlace()">Find another restaurant</button>
+      </div>
     </div>
     <script>
       var map, infoWindow, marker, service, pos, request, searchResults, marker;
@@ -34,7 +30,7 @@ better gui
       function createMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 0, lng: 0},
-          zoom: 10
+          zoom: 12
         });
         
         infowindow = new google.maps.InfoWindow();
