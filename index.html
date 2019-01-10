@@ -21,6 +21,10 @@ better gui
     <div id="button">
       <button onclick="newPlace()">Find another restaurant</button>
     </div>
+
+    <div id="modal">
+      <p></p>
+    </div>
     <script>
       var map, infoWindow, marker, service, pos, request, searchResults, marker;
       var randomIndex = 1;
@@ -96,6 +100,8 @@ better gui
             position: place.geometry.location,
             animation: google.maps.Animation.DROP
         });
+
+        map.setCenter(place.geometry.location);
         
         marker.addListener('click', function() {
           infowindow.setOptions({

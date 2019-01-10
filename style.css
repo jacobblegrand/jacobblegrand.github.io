@@ -2,17 +2,38 @@
 TODO:
 make output appear in modal box
 */
+#modal {
+  position: absolute;
+  margin: auto;
+  z-index: 1;
+  left: 25%;
+  top: 25%;
+  border: 3px solid red;
+  width: 50%;
+  height: 50%;
+  overflow: auto;
+  text-align: center
+}
+
 #map {
-  height: 500px;
+  height: 100%;
   width: 100%;
   position: relative;
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 #output {
   height: 100px;
   width: 100%;
   padding-bottom: 50px;
   text-align: center;
 }
+
 #button {
   text-align: center;
 }
