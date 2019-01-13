@@ -2,11 +2,17 @@
   .button {
     font-size: 30px;
   }
+  #buttonC {
+    width: 500px;
+  }
 }
 
 @media screen and (max-width: 600px) {
   .button {
     font-size: 17px;
+  }
+  #buttonC {
+    width: 300px;
   }
 }
 
@@ -64,11 +70,18 @@ html, body {
   line-height: 1;
 }
 
+#buttonC {
+  position: relative;
+  bottom: 13%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: inline-block;
+  display: block;
+}
+
 .button {
   font-family: 'Oswald', sans-serif;
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
   text-align: center;
   background-color: white;
   color: black;
@@ -77,7 +90,7 @@ html, body {
   cursor: pointer;
   border: 4px solid black;
   border-radius: 4px;
-  transform: translate(-50%, -50%);
+  margin: 5px 0px;
 }
 
 .button:hover {

@@ -3,7 +3,6 @@ TODO:
 give marker more useful information (picutre, directions)
   use directions service api
 better favicon
-make loading animation cover page until restaurants are loaded
 -->
 
 <!DOCTYPE html>
@@ -16,27 +15,28 @@ make loading animation cover page until restaurants are loaded
     <link rel="icon" href="https://i.ibb.co/7CJYgMX/Restaurant-Favicon.png">
   </head>
   <body>
+    <!--Loading screen-->
     <div id="loading">
       <div id="loadingMessage">
         <h1>Finding restaurants in your area...</h1>
         <div class="sk-folding-cube">
-        <div class="sk-cube1 sk-cube"></div>
-        <div class="sk-cube2 sk-cube"></div>
-        <div class="sk-cube4 sk-cube"></div>
-        <div class="sk-cube3 sk-cube"></div>
-          </div>
+          <div class="sk-cube1 sk-cube"></div>
+          <div class="sk-cube2 sk-cube"></div>
+          <div class="sk-cube4 sk-cube"></div>
+          <div class="sk-cube3 sk-cube"></div>
+        </div>
       </div>
     </div>
-    <!--container for map-->
     <div id="map"></div>
     <div id="modal">
       <div id="output"></div>
     </div>
+    <div id="buttonC"></div>
 
     <script>
       var map, infoWindow, marker, service, pos, request, searchResults, marker, directionRequest;
       var randomIndex = 1;
-      var randomNums = [];
+      var randomNums = [];//array used to randomize restaurant selection
       var op = document.getElementById('output');
 
       function createMap() {
@@ -97,14 +97,17 @@ make loading animation cover page until restaurants are loaded
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             createMarker(searchResults[randomNums[0]]);
           }
+          //remove loading screen
           var l = document.getElementById("loading");
           l.parentNode.removeChild(l);
           op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].vicinity + "</h3>";
-          addButton();
+          //make "find another restaurant" button appear
+          addButtons();
         }
       }
 
       function createMarker(place) {
+        //custom marker
         var foodIcon = {
           url: "https://i.ibb.co/JQzK0f7/Restaurant-Icon.png",
         }
@@ -116,31 +119,45 @@ make loading animation cover page until restaurants are loaded
             icon: foodIcon
         });
 
+        //center the map slightly above the restaurant location
         var mapCenter = {
           lat: place.geometry.location.lat()+.03,
           lng: place.geometry.location.lng()
         }
         map.setCenter(mapCenter);
         
+        //set position for infowindow
         var iwLoc = {
           lat: place.geometry.location.lat()+.008,
           lng: place.geometry.location.lng()
         }
+
+        /*
+        //directions api
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        directionsDisplay.setMap(map);
         directionRequest = {
           origin: pos,
           destination: place.geometry.location,
           travelMode: google.maps.TravelMode.DRIVING
         }
-        
+        directionsService.route(directionRequest, function(response) {
+          directionsDisplay.setDirections(response)
+        });
+        */
+        /*
         marker.addListener('click', function() {
           infowindow.setOptions({
             position: iwLoc
           });
           infowindow.open(map);
         })
+        */
       }
 
       function newPlace() {
+        //remove marker, reset zoom, close infowindow
         marker.setMap(null);
         map.zoom=12;
         infowindow.close(map);
@@ -156,14 +173,22 @@ make loading animation cover page until restaurants are loaded
         }
       }
 
-      function addButton() {
-        var btn = document.createElement("BUTTON");
-        var t = document.createTextNode("FIND ANOTHER RESTAURANT");
-        btn.appendChild(t);
-        btn.setAttribute("class", "button");
-        btn.setAttribute("onclick", "newPlace()");
-        document.body.appendChild(btn);
+      //function to create and add the "find another restaurant" and "get directions" buttons
+      function addButtons() {
+        var btn1 = document.createElement("BUTTON");
+        var btn2 = document.createElement("BUTTON");
+        var t1 = document.createTextNode("GET DIRECTIONS");
+        var t2 = document.createTextNode("FIND ANOTHER RESTAURANT");
+        btn1.appendChild(t1);
+        btn1.setAttribute("class", "button");
+        btn2.appendChild(t2);
+        btn2.setAttribute("class", "button");
+        btn2.setAttribute("onclick", "newPlace()");
+        var btns = document.getElementById("buttonC");
+        btns.appendChild(btn1);
+        btns.appendChild(btn2);
       }
+
     </script>
 
     <script async defer
