@@ -3,6 +3,7 @@ TODO:
 give marker more useful information (picutre, directions)
 fix button hover
 make button not appear until results are loaded
+website icon?
 -->
 
 <!DOCTYPE html>
@@ -99,7 +100,11 @@ make button not appear until results are loaded
             animation: google.maps.Animation.DROP
         });
 
-        map.setCenter(place.geometry.location);
+        var mapCenter = {
+          lat: place.geometry.location.lat()+.03,
+          lng: place.geometry.location.lng()
+        }
+        map.setCenter(mapCenter);
         
         marker.addListener('click', function() {
           infowindow.setOptions({
