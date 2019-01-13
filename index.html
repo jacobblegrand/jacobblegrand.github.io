@@ -13,17 +13,19 @@ make loading animation cover page until restaurants are loaded
     <title>Anywhere's Fine</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-    <link rel="icon" href="https://i.ibb.co/Tbp81rw/Restaurant-Favicon.png">
+    <link rel="icon" href="https://i.ibb.co/7CJYgMX/Restaurant-Favicon.png">
   </head>
   <body>
-    <!--container for map-->
-    <div id="map"></div>
-    <div id="modal">
-      <div id="output">
+    <div id="loading">
+      <div id="loadingMessage">
         <h1>Finding restaurants in your area...</h1>
       </div>
     </div>
-    <!--<button class="button" onclick="newPlace()">FIND ANOTHER RESTAURANT</button>-->
+    <!--container for map-->
+    <div id="map"></div>
+    <div id="modal">
+      <div id="output"></div>
+    </div>
 
     <script>
       var map, infoWindow, marker, service, pos, request, searchResults, marker, directionRequest;
@@ -89,6 +91,8 @@ make loading animation cover page until restaurants are loaded
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             createMarker(searchResults[randomNums[0]]);
           }
+          var l = document.getElementById("loading");
+          l.parentNode.removeChild(l);
           op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].vicinity + "</h3>";
           addButton();
         }
