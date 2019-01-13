@@ -31,11 +31,11 @@ html, body {
 
 #output {
   position: absolute;
-  top: 10%;
+  top: 5%;
   height: 30%;
   width: 100%;
   text-align: center;
-  line-height: 0.8;
+  line-height: 1;
 }
 
 .button {
