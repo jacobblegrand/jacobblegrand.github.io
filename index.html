@@ -22,8 +22,7 @@ website icon?
         <h1>Finding restaurants in your area...</h1>
       </div>
     </div>
-      <button class="button" onclick="newPlace()">FIND ANOTHER RESTAURANT</button>
-  </div>
+    <!--<button class="button" onclick="newPlace()">FIND ANOTHER RESTAURANT</button>-->
 
     <script>
       var map, infoWindow, marker, service, pos, request, searchResults, marker;
@@ -105,11 +104,15 @@ website icon?
           lng: place.geometry.location.lng()
         }
         map.setCenter(mapCenter);
+        addButton();
         
+        var iwLoc = {
+          lat: place.geometry.location.lat()+.008,
+          lng: place.geometry.location.lng()
+        }
         marker.addListener('click', function() {
           infowindow.setOptions({
-            content: ("<p>" + place.name + "</p><p>" + place.vicinity + "</p>"),
-            position: place.geometry.location
+            position: iwLoc
           });
           infowindow.open(map);
         })
@@ -129,6 +132,15 @@ website icon?
         else {
           randomIndex = 0;
         }
+      }
+
+      function addButton() {
+        var btn = document.createElement("BUTTON");
+        var t = document.createTextNode("FIND ANOTHER RESTAURANT");
+        btn.appendChild(t);
+        btn.setAttribute("class", "button");
+        btn.setAttribute("onclick", "newPlace()");
+        document.body.appendChild(btn);
       }
     </script>
 
