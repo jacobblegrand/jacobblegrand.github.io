@@ -1,9 +1,10 @@
 <!--
 TODO: 
 give marker more useful information (picutre, directions)
+  use directions service api
 fix button hover
-make button not appear until results are loaded
 website icon?
+make better marker icon
 -->
 
 <!DOCTYPE html>
@@ -93,10 +94,15 @@ website icon?
       }
 
       function createMarker(place) {
+        var foodIcon = {
+          url: "https://i.ibb.co/JQzK0f7/Restaurant-Icon.png",
+        }
+
         marker = new google.maps.Marker({
             map: map,
             position: place.geometry.location,
-            animation: google.maps.Animation.DROP
+            animation: google.maps.Animation.DROP,
+            icon: foodIcon
         });
 
         var mapCenter = {
@@ -116,11 +122,11 @@ website icon?
           });
           infowindow.open(map);
         })
-        
       }
 
       function newPlace() {
         marker.setMap(null);
+        map.zoom=12;
         infowindow.close(map);
         var place = searchResults[randomNums[randomIndex]];
         //loop through array of restaurants
