@@ -2,9 +2,8 @@
 TODO: 
 give marker more useful information (picutre, directions)
   use directions service api
-fix button hover
-website icon?
-make better marker icon
+better favicon
+make loading animation cover page until restaurants are loaded
 -->
 
 <!DOCTYPE html>
@@ -14,6 +13,7 @@ make better marker icon
     <title>Anywhere's Fine</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link rel="icon" href="https://i.ibb.co/Tbp81rw/Restaurant-Favicon.png">
   </head>
   <body>
     <!--container for map-->
@@ -26,7 +26,7 @@ make better marker icon
     <!--<button class="button" onclick="newPlace()">FIND ANOTHER RESTAURANT</button>-->
 
     <script>
-      var map, infoWindow, marker, service, pos, request, searchResults, marker;
+      var map, infoWindow, marker, service, pos, request, searchResults, marker, directionRequest;
       var randomIndex = 1;
       var randomNums = [];
       var op = document.getElementById('output');
@@ -90,6 +90,7 @@ make better marker icon
             createMarker(searchResults[randomNums[0]]);
           }
           op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].vicinity + "</h3>";
+          addButton();
         }
       }
 
@@ -110,12 +111,17 @@ make better marker icon
           lng: place.geometry.location.lng()
         }
         map.setCenter(mapCenter);
-        addButton();
         
         var iwLoc = {
           lat: place.geometry.location.lat()+.008,
           lng: place.geometry.location.lng()
         }
+        directionRequest = {
+          origin: pos,
+          destination: place.geometry.location,
+          travelMode: google.maps.TravelMode.DRIVING
+        }
+        
         marker.addListener('click', function() {
           infowindow.setOptions({
             position: iwLoc
