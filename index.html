@@ -1,7 +1,8 @@
 <!--
 TODO: 
 better favicon
-format "filter restaurants" button
+stretch marker icon vertically
+make infowindow display rating and price
 clean up all these global variables and general code nastiness
 -->
 
@@ -12,7 +13,7 @@ clean up all these global variables and general code nastiness
     <title>Anywhere's Fine</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-    <link rel="icon" href="https://i.ibb.co/7CJYgMX/Restaurant-Favicon.png">
+    <link rel="icon" href="https://i.ibb.co/1r8xkWn/Restaurant-Favicon.png">
   </head>
   <body>
     <!--Loading screen-->
@@ -91,7 +92,6 @@ clean up all these global variables and general code nastiness
           filterByLoc(unfiltered);
           unfiltered=[];
           randomNums=[];
-          console.log(searchResults);
           //create array of random numbers to be used to cycle through restaurants
           while (randomNums.length < searchResults.length) {
             var n = Math.floor(Math.random() * searchResults.length);
@@ -120,7 +120,7 @@ clean up all these global variables and general code nastiness
         }
         //custom marker
         var foodIcon = {
-          url: "https://i.ibb.co/JQzK0f7/Restaurant-Icon.png",
+          url: "https://i.ibb.co/PGdFnmy/Restaurant-Icon.png",
         }
         //remove marker, reset zoom, close infowindow
         if (typeof marker !== "undefined") {      
@@ -151,14 +151,13 @@ clean up all these global variables and general code nastiness
           lng: place.geometry.location.lng()
         }
 
-        /*
+        
         marker.addListener('click', function() {
           infowindow.setOptions({
             position: iwLoc
           });
           infowindow.open(map);
         })
-        */
       }
 
       function newPlace() {
