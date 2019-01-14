@@ -1,6 +1,8 @@
 <!--
 TODO: 
 better favicon
+format "filter restaurants" button
+clean up all these global variables and general code nastiness
 -->
 
 <!DOCTYPE html>
@@ -30,11 +32,12 @@ better favicon
       <div id="output"></div>
     </div>
     <div id="buttonC"></div>
-
     <script>
-      var map, infoWindow, marker, service, pos, request, searchResults, marker, dest;
+      var map, infoWindow, marker, service, pos, request, unfiltered, marker, dest;
+      var sbText = "FILTER RESULTS TO ONLY INLCUDE FAST FOOD";
       var randomIndex = 1;
-      var randomNums = [];//array used to randomize restaurant selection
+      var randomNums = [];
+      var searchResults = [];//array used to randomize restaurant selection
       var op = document.getElementById('output');
 
       function createMap() {
@@ -55,7 +58,6 @@ better favicon
         map.setCenter(pos);
           });
         }
-
         waitForLoc();
       }
 
@@ -64,11 +66,11 @@ better favicon
         if (typeof pos !== "undefined") {
           request = {
             location: pos,
-            radius: 16093,//10 miles in meters
-            type: ['restaurant']
+            radius: '16093',//10 miles in meters
+            query: 'restaurant'
           };
           service = new google.maps.places.PlacesService(map);
-          service.nearbySearch(request, output);
+          service.textSearch(request, output);
         }
         else {
           setTimeout(waitForLoc, 1000);
@@ -78,13 +80,18 @@ better favicon
       function output(results, status, pagination) {
         pagination.nextPage();
         //allow results array to be accessed outside of this function
-        if (typeof searchResults === "undefined") {
-          searchResults = results;
+        if (typeof unfiltered === "undefined") {
+          unfiltered = results;
         }
         else {
-          searchResults = searchResults.concat(results);
+          unfiltered = unfiltered.concat(results);
         }
+
         if (!pagination.hasNextPage) {
+          filterByLoc(unfiltered);
+          unfiltered=[];
+          randomNums=[];
+          console.log(searchResults);
           //create array of random numbers to be used to cycle through restaurants
           while (randomNums.length < searchResults.length) {
             var n = Math.floor(Math.random() * searchResults.length);
@@ -95,12 +102,13 @@ better favicon
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             createMarker(searchResults[randomNums[0]]);
           }
-          //remove loading screen
-          var l = document.getElementById("loading");
-          l.parentNode.removeChild(l);
-          op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].vicinity + "</h3>";
-          //make "find another restaurant" button appear
-          addButtons();
+          //remove loading screen if it exists
+          if (document.getElementById("loading")) {
+            var l = document.getElementById("loading");
+            l.parentNode.removeChild(l);
+            addButtons();
+          }
+          op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].formatted_address + "</h3>";
         }
       }
 
@@ -113,6 +121,14 @@ better favicon
         //custom marker
         var foodIcon = {
           url: "https://i.ibb.co/JQzK0f7/Restaurant-Icon.png",
+        }
+        //remove marker, reset zoom, close infowindow
+        if (typeof marker !== "undefined") {      
+          marker.setMap(null);
+          map.zoom=12;
+          infowindow.close(map);
+          var sb = document.getElementById('sbutton');
+          sb.innerText = sbText;
         }
 
         marker = new google.maps.Marker({
@@ -152,7 +168,7 @@ better favicon
         infowindow.close(map);
         var place = searchResults[randomNums[randomIndex]];
         //loop through array of restaurants
-        op.innerHTML = "<h3>How about...<h3><h1>" + place.name + "</h1><h3>" + place.vicinity + "<h3>";
+        op.innerHTML = "<h3>How about...<h3><h1>" + place.name + "</h1><h3>" + place.formatted_address + "<h3>";
         createMarker(place);
         if (randomIndex < searchResults.length-1) {
           randomIndex += 1;
@@ -174,23 +190,51 @@ better favicon
       function addButtons() {
         var btn1 = document.createElement("BUTTON");
         var btn2 = document.createElement("BUTTON");
-        var t1 = document.createTextNode("GET DIRECTIONS");
-        var t2 = document.createTextNode("FIND ANOTHER RESTAURANT");
-        btn1.appendChild(t1);
+        var btn3 = document.createElement("BUTTON");
+        btn1.innerText = "GET DIRECTIONS";
         btn1.setAttribute("class", "button");
         btn1.setAttribute("onclick", "getDirections()");
-        btn2.appendChild(t2);
+        btn2.innerText = "FIND ANOTHER RESTAURANT";
         btn2.setAttribute("class", "button");
         btn2.setAttribute("onclick", "newPlace()");
+        btn3.innerText = sbText;
+        btn3.setAttribute("class", "button");
+        btn3.setAttribute("onclick", "filterResults()");
+        btn3.id = 'sbutton';
         var btns = document.getElementById("buttonC");
         btns.appendChild(btn1);
         btns.appendChild(btn2);
+        btns.appendChild(btn3);
+      }
+
+      //function to remove elements that are not in a certain radius of the current location
+      function filterByLoc(unfiltered) {
+        var gPos = new google.maps.LatLng(pos.lat, pos.lng);//convert to a LatLng object
+        searchResults = [];//clear searchResults array
+        for (var i=0; i < unfiltered.length; i++) {
+          if (google.maps.geometry.spherical.computeDistanceBetween(unfiltered[i].geometry.location, gPos) < request.radius) {
+            searchResults.push(unfiltered[i]);
+          }
+        }
+      }
+
+      function filterResults() {
+        var sb = document.getElementById('sbutton');
+        sb.innerText = "LOADING...";
+        if (request.query === 'restaurant') {
+          request.query = 'fast food';
+          sbText = 'EXPAND RESULTS TO INCLUDE ALL RESTAURANTS';
+        } else {
+          request.query = 'restaurant';
+          sbText = 'FILTER RESULTS TO ONLY INCLUDE FAST FOOD';
+        }
+        service.textSearch(request, output);
       }
 
     </script>
 
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYt9VVQ99uazPcofKhJrS4AIGCa9AC6hQ&libraries=places&callback=createMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYt9VVQ99uazPcofKhJrS4AIGCa9AC6hQ&libraries=places,geometry&callback=createMap">
     </script>
   </body>
   
