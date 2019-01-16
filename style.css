@@ -19,7 +19,7 @@
   }
 }
 
-h1, h3, p, a {
+h1, h3, p, a, #fr {
   font-family: 'Oswald', sans-serif;
 }
 
@@ -29,7 +29,13 @@ h1, h3, p, a {
   overflow: hidden;
 }
 
-#loading {
+#fr {
+  position: relative;
+  bottom: 0;
+  font-size: 18px;
+}
+
+#loading, #smallLoad {
   position: absolute;
   text-align: center;
   z-index: 2;
@@ -37,6 +43,13 @@ h1, h3, p, a {
   height: 100%;
   overflow: auto;
   background-color: white;
+}
+
+#smallLoad {
+  top: 40%;
+  height: 15%;
+  z-index: 3;
+  background-color: transparent;
 }
 
 #loadingMessage {
@@ -76,7 +89,7 @@ html, body {
   height: 30%;
   width: 100%;
   text-align: center;
-  line-height: 1;
+  line-height: .9;
 }
 
 #buttonC {

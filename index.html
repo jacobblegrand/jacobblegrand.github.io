@@ -1,8 +1,7 @@
 <!--
 TODO: 
-make infowindow display rating, price, hours, website (use place details)
-turn filter results button into a checkbox (bottom of modal perhaps?)
 clean up all these global variables and general code nastiness
+cosmetic changes
 -->
 
 <!DOCTYPE html>
@@ -34,11 +33,11 @@ clean up all these global variables and general code nastiness
     <div id="buttonC"></div>
     <script>
       var map, infoWindow, marker, service, pos, request, unfiltered, marker, dest;
-      var sbText = "FILTER RESULTS TO ONLY INLCUDE FAST FOOD";
       var randomIndex = 1;
       var randomNums = [];
       var searchResults = [];//array used to randomize restaurant selection
       var op = document.getElementById('output');
+      var isChecked = "";
 
       function createMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -108,7 +107,9 @@ clean up all these global variables and general code nastiness
             l.parentNode.removeChild(l);
             addButtons();
           }
-          op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name + "</h1><h3>" + searchResults[randomNums[0]].formatted_address + "</h3>";
+          op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name 
+                       + "</h1><h3>" + searchResults[randomNums[0]].formatted_address 
+                       + "</h3><div id='fr'><input type='checkbox' onclick='filterResults()' " + isChecked + ">Filter results to only include fast food</div>";
         }
       }
 
@@ -127,8 +128,11 @@ clean up all these global variables and general code nastiness
           marker.setMap(null);
           map.zoom=12;
           infowindow.close(map);
-          var sb = document.getElementById('sbutton');
-          sb.innerText = sbText;
+        }
+        //if small loading screen present, remove it
+        if (document.getElementById("smallLoad")){
+          var l = document.getElementById("smallLoad");
+          l.parentNode.removeChild(l);
         }
 
         marker = new google.maps.Marker({
@@ -161,7 +165,8 @@ clean up all these global variables and general code nastiness
         infowindow.close(map);
         var place = searchResults[randomNums[randomIndex]];
         //loop through array of restaurants
-        op.innerHTML = "<h3>How about...<h3><h1>" + place.name + "</h1><h3>" + place.formatted_address + "<h3>";
+        op.innerHTML = "<h3>How about...<h3><h1>" + place.name + "</h1><h3>" 
+                     + place.formatted_address + "</h3><div id='fr'><input type='checkbox' onclick='filterResults()' " + isChecked + ">Filter results to only include fast food</div>";
         createMarker(place);
         if (randomIndex < searchResults.length-1) {
           randomIndex += 1;
@@ -183,21 +188,15 @@ clean up all these global variables and general code nastiness
       function addButtons() {
         var btn1 = document.createElement("BUTTON");
         var btn2 = document.createElement("BUTTON");
-        var btn3 = document.createElement("BUTTON");
         btn1.innerText = "GET DIRECTIONS";
         btn1.setAttribute("class", "button");
         btn1.setAttribute("onclick", "getDirections()");
         btn2.innerText = "FIND ANOTHER RESTAURANT";
         btn2.setAttribute("class", "button");
         btn2.setAttribute("onclick", "newPlace()");
-        btn3.innerText = sbText;
-        btn3.setAttribute("class", "button");
-        btn3.setAttribute("onclick", "filterResults()");
-        btn3.id = 'sbutton';
         var btns = document.getElementById("buttonC");
         btns.appendChild(btn1);
         btns.appendChild(btn2);
-        btns.appendChild(btn3);
       }
 
       //function to remove elements that are not in a certain radius of the current location
@@ -212,14 +211,20 @@ clean up all these global variables and general code nastiness
       }
 
       function filterResults() {
-        var sb = document.getElementById('sbutton');
-        sb.innerText = "LOADING...";
+        var l = document.createElement('div');
+        l.setAttribute('id', 'smallLoad');
+        l.innerHTML = "<h1>Loading...</h1>";
+        document.body.appendChild(l);
+        if (isChecked === "") {
+          isChecked = "checked";
+        } else {
+          isChecked = "";
+        }
+
         if (request.query === 'restaurant') {
           request.query = 'fast food';
-          sbText = 'EXPAND RESULTS TO INCLUDE ALL RESTAURANTS';
         } else {
           request.query = 'restaurant';
-          sbText = 'FILTER RESULTS TO ONLY INCLUDE FAST FOOD';
         }
         service.textSearch(request, output);
       }
@@ -228,14 +233,14 @@ clean up all these global variables and general code nastiness
       function createIW(iwLoc, id) {
         var request = {
           placeId: id,
-          fields: ['rating', 'price_level', 'website', 'opening_hours']
+          fields: ['rating', 'price_level', 'website']
         };
 
         var s = "<div id='iw'><p>Rating: ";
         service.getDetails(request, function(place, status) {
           //make html string here
           if (status === google.maps.places.PlacesServiceStatus.OK) {
-            s += place.rating + "</p>";
+            s += place.rating + "/5</p>";
             if (place.price_level !== undefined) {
               s += "<p>Price: ";
               for (var i=0; i<place.price_level; i++) {
@@ -251,7 +256,6 @@ clean up all these global variables and general code nastiness
         });
 
         marker.addListener('click', function() {
-          console.log(s);
           infowindow.setOptions({
             content: s,
             position: iwLoc
