@@ -1,8 +1,7 @@
 <!--
 TODO: 
-better favicon
-stretch marker icon vertically
-make infowindow display rating and price
+make infowindow display rating, price, hours, website (use place details)
+turn filter results button into a checkbox (bottom of modal perhaps?)
 clean up all these global variables and general code nastiness
 -->
 
@@ -68,7 +67,8 @@ clean up all these global variables and general code nastiness
           request = {
             location: pos,
             radius: '16093',//10 miles in meters
-            query: 'restaurant'
+            query: 'restaurant',
+            openNow: true
           };
           service = new google.maps.places.PlacesService(map);
           service.textSearch(request, output);
@@ -147,17 +147,11 @@ clean up all these global variables and general code nastiness
         
         //set position for infowindow
         var iwLoc = {
-          lat: place.geometry.location.lat()+.008,
+          lat: place.geometry.location.lat()+.011,
           lng: place.geometry.location.lng()
         }
 
-        
-        marker.addListener('click', function() {
-          infowindow.setOptions({
-            position: iwLoc
-          });
-          infowindow.open(map);
-        })
+        createIW(iwLoc, place.place_id);
       }
 
       function newPlace() {
@@ -230,6 +224,41 @@ clean up all these global variables and general code nastiness
         service.textSearch(request, output);
       }
 
+      //function to fill the infowindow with relavent information
+      function createIW(iwLoc, id) {
+        var request = {
+          placeId: id,
+          fields: ['rating', 'price_level', 'website', 'opening_hours']
+        };
+
+        var s = "<div id='iw'><p>Rating: ";
+        service.getDetails(request, function(place, status) {
+          //make html string here
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            s += place.rating + "</p>";
+            if (place.price_level !== undefined) {
+              s += "<p>Price: ";
+              for (var i=0; i<place.price_level; i++) {
+                s += "<b>$</b>";
+              }
+              s += "</p>";
+            }
+            if (place.website !== undefined) {
+              s += "<a href='" + place.website + "'>Website</a>";
+            }
+            s += "</div>"
+          }
+        });
+
+        marker.addListener('click', function() {
+          console.log(s);
+          infowindow.setOptions({
+            content: s,
+            position: iwLoc
+          });
+          infowindow.open(map);
+        })
+      }
     </script>
 
     <script async defer
