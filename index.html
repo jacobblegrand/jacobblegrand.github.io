@@ -2,6 +2,8 @@
 TODO: 
 custom checkbox
 add hours to infowindow
+make star rating
+add buttons to map object?
 clean up all these global variables and general code nastiness
 cosmetic changes
 -->
@@ -40,11 +42,14 @@ cosmetic changes
       var searchResults = [];//array used to randomize restaurant selection
       var op = document.getElementById('output');
       var isChecked = "";
+      var currentDay = getDay();
 
       function createMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 0, lng: 0},
-          zoom: 12
+          zoom: 13,
+          disableDefaultUI: true,
+          styles: mapStyle
         });
         
         infowindow = new google.maps.InfoWindow();
@@ -111,7 +116,8 @@ cosmetic changes
           }
           op.innerHTML = "<h3>How about...<h3><h1>" + searchResults[randomNums[0]].name 
                        + "</h1><h3>" + searchResults[randomNums[0]].formatted_address 
-                       + "</h3><div id='fr'><input type='checkbox' onclick='filterResults()' " + isChecked + ">Filter results to only include fast food</div>";
+                       + "</h3><div id='fr'><input type='checkbox' onclick='filterResults()' " 
+                       + isChecked + ">Filter results to only include fast food</div>";
         }
       }
 
@@ -128,7 +134,7 @@ cosmetic changes
         //remove marker, reset zoom, close infowindow
         if (typeof marker !== "undefined") {      
           marker.setMap(null);
-          map.zoom=12;
+          map.zoom=13;
           infowindow.close(map);
         }
         //if small loading screen present, remove it
@@ -146,14 +152,14 @@ cosmetic changes
 
         //center the map slightly above the restaurant location
         var mapCenter = {
-          lat: place.geometry.location.lat()+.04,
+          lat: place.geometry.location.lat()+.016,
           lng: place.geometry.location.lng()
         }
         map.setCenter(mapCenter);
         
         //set position for infowindow
         var iwLoc = {
-          lat: place.geometry.location.lat()+.011,
+          lat: place.geometry.location.lat()+.007,
           lng: place.geometry.location.lng()
         }
 
@@ -163,12 +169,13 @@ cosmetic changes
       function newPlace() {
         //remove marker, reset zoom, close infowindow
         marker.setMap(null);
-        map.zoom=12;
+        map.zoom=14;
         infowindow.close(map);
         var place = searchResults[randomNums[randomIndex]];
         //loop through array of restaurants
-        op.innerHTML = "<h3>How about...<h3><h1>" + place.name + "</h1><h3>" 
-                     + place.formatted_address + "</h3><div id='fr'><input type='checkbox' onclick='filterResults()' " + isChecked + ">Filter results to only include fast food</div>";
+        op.innerHTML = "<h3>How about...<h3><h1>" + place.name + "</h1><h3>" + place.formatted_address 
+                     + "</h3><div id='fr'><input type='checkbox' onclick='filterResults()' " 
+                     + isChecked + ">Filter results to only include fast food</div>";
         createMarker(place);
         if (randomIndex < searchResults.length-1) {
           randomIndex += 1;
@@ -179,6 +186,7 @@ cosmetic changes
       }
 
       function getDirections() {
+        //create a maps url to give directions from current location to destination
         var url = "https://www.google.com/maps/dir/?api=1";
         var origin = "&origin=" + pos.lat + "," + pos.lng;
         var destination = "&destination=" + dest.lat + "," + dest.lng;
@@ -235,7 +243,7 @@ cosmetic changes
       function createIW(iwLoc, id) {
         var request = {
           placeId: id,
-          fields: ['rating', 'price_level', 'website']
+          fields: ['rating', 'price_level', 'website', 'opening_hours']
         };
 
         var s = "<div id='iw'><p>Rating: ";
@@ -249,6 +257,9 @@ cosmetic changes
                 s += "<b>$</b>";
               }
               s += "</p>";
+            }
+            if (place.opening_hours !== undefined) {
+              s += "<p>Hours: " + place.opening_hours.weekday_text[currentDay] + "</p>";
             }
             if (place.website !== undefined) {
               s += "<a href='" + place.website + "' target='blank'>Website</a>";
@@ -265,11 +276,22 @@ cosmetic changes
           infowindow.open(map);
         })
       }
+
+    //function to get the day of the week and return it as a number starting at 0 for sunday
+    function getDay() {
+      var d = new Date();
+      var td = d.getDay() - 1;
+      if (td === -1) {
+        td = 6;
+      }
+      return td;
+    }
     </script>
 
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBYt9VVQ99uazPcofKhJrS4AIGCa9AC6hQ&libraries=places,geometry&callback=createMap">
     </script>
+    <script type="text/javascript" src="mapStyle.json"></script>
   </body>
   
 </script>
