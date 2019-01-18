@@ -1,8 +1,6 @@
 <!--
 TODO: 
 custom checkbox
-add hours to infowindow
-make star rating
 add buttons to map object?
 clean up all these global variables and general code nastiness
 cosmetic changes
@@ -152,14 +150,14 @@ cosmetic changes
 
         //center the map slightly above the restaurant location
         var mapCenter = {
-          lat: place.geometry.location.lat()+.016,
+          lat: place.geometry.location.lat()+.02,
           lng: place.geometry.location.lng()
         }
         map.setCenter(mapCenter);
         
         //set position for infowindow
         var iwLoc = {
-          lat: place.geometry.location.lat()+.007,
+          lat: place.geometry.location.lat()+.006,
           lng: place.geometry.location.lng()
         }
 
@@ -259,7 +257,9 @@ cosmetic changes
               s += "</p>";
             }
             if (place.opening_hours !== undefined) {
-              s += "<p>Hours: " + place.opening_hours.weekday_text[currentDay] + "</p>";
+              //remove weekday from beginning of string
+              var h = place.opening_hours.weekday_text[currentDay].split(": ").pop();
+              s += "<p>Hours: " + h + "</p>";
             }
             if (place.website !== undefined) {
               s += "<a href='" + place.website + "' target='blank'>Website</a>";
