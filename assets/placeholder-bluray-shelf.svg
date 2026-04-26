@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Placeholder for Jacob's Blu-ray shelf</title>
+  <desc id="desc">A simple illustrated shelf with blue movie cases.</desc>
+  <rect width="1200" height="900" fill="#f5efe2"/>
+  <rect x="120" y="140" width="960" height="620" rx="16" fill="#fffaf0" stroke="#24443a" stroke-width="12"/>
+  <g fill="#24443a">
+    <rect x="190" y="235" width="820" height="22" rx="4"/>
+    <rect x="190" y="430" width="820" height="22" rx="4"/>
+    <rect x="190" y="625" width="820" height="22" rx="4"/>
+  </g>
+  <g>
+    <rect x="230" y="270" width="52" height="150" rx="6" fill="#1e5f99"/>
+    <rect x="296" y="288" width="44" height="132" rx="6" fill="#2b74b8"/>
+    <rect x="354" y="252" width="54" height="168" rx="6" fill="#17466f"/>
+    <rect x="424" y="304" width="40" height="116" rx="6" fill="#3f8cc8"/>
+    <rect x="478" y="276" width="58" height="144" rx="6" fill="#245f9f"/>
+    <rect x="550" y="262" width="46" height="158" rx="6" fill="#69a2d8"/>
+    <rect x="610" y="294" width="50" height="126" rx="6" fill="#1f568a"/>
+    <rect x="674" y="270" width="56" height="150" rx="6" fill="#2f79bd"/>
+    <rect x="744" y="306" width="42" height="114" rx="6" fill="#143a5e"/>
+    <rect x="800" y="258" width="54" height="162" rx="6" fill="#367fc1"/>
+    <rect x="868" y="284" width="50" height="136" rx="6" fill="#22619c"/>
+    <rect x="230" y="465" width="46" height="150" rx="6" fill="#245f9f"/>
+    <rect x="290" y="490" width="56" height="125" rx="6" fill="#69a2d8"/>
+    <rect x="360" y="452" width="42" height="163" rx="6" fill="#17466f"/>
+    <rect x="416" y="470" width="54" height="145" rx="6" fill="#3f8cc8"/>
+    <rect x="484" y="504" width="46" height="111" rx="6" fill="#1e5f99"/>
+    <rect x="544" y="464" width="58" height="151" rx="6" fill="#2f79bd"/>
+    <rect x="616" y="486" width="44" height="129" rx="6" fill="#143a5e"/>
+    <rect x="674" y="454" width="52" height="161" rx="6" fill="#367fc1"/>
+  </g>
+  <text x="600" y="825" text-anchor="middle" fill="#173029" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">Jacob's Blu-ray shelf</text>
+</svg>
