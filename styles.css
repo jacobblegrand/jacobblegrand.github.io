@@ -32,11 +32,11 @@ a:focus {
 }
 
 .bg-ivory {
-  background-color: var(--ivory);
+  background: linear-gradient(180deg, var(--ivory) 0%, var(--ivory) calc(100% - 15px), var(--paper) 100%);
 }
 
 .bg-warm {
-  background: var(--paper);
+  background: linear-gradient(180deg, var(--paper) 0%, var(--paper) calc(100% - 15px), var(--ivory) 100%);
 }
 
 .hero {
